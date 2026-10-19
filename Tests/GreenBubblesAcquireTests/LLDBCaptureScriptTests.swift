@@ -18,7 +18,7 @@ struct LLDBCaptureScriptTests {
 
   @Test func arm64ScriptUsesArgumentRegistersInProvenOrder() {
     let script = LLDBCaptureScript.script(processID: 4242, architecture: .arm64)
-    #expect(script.contains("breakpoint set -n CCKeyDerivationPBKDF -c '$x2 == 32'"))
+    #expect(script.contains("breakpoint set -n CCKeyDerivationPBKDF -c '$x0 == 2 && $x2 == 32 && $x4 == 16 && $x5 == 5 && $x6 == 256000'"))
     #expect(script.contains("memory read --size 1 --count 32 --format x $x1"))
     #expect(script.hasSuffix("process continue\n"))
     assertProvenOrdering(in: script)
@@ -26,7 +26,7 @@ struct LLDBCaptureScriptTests {
 
   @Test func x86_64ScriptUsesArgumentRegistersInProvenOrder() {
     let script = LLDBCaptureScript.script(processID: 4242, architecture: .x86_64)
-    #expect(script.contains("breakpoint set -n CCKeyDerivationPBKDF -c '$rdx == 32'"))
+    #expect(script.contains("breakpoint set -n CCKeyDerivationPBKDF -c '$rdi == 2 && $rdx == 32 && $r8 == 16 && $r9 == 5'"))
     #expect(script.contains("memory read --size 1 --count 32 --format x $rsi"))
     assertProvenOrdering(in: script)
   }

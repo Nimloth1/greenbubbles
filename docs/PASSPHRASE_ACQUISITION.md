@@ -144,8 +144,10 @@ it is why you have to log out and back in.
 `greenbubbles-acquire capture` does this:
 
 1. Attaches Apple's `lldb` debugger to WeChat and pauses on
-   `CCKeyDerivationPBKDF` only when the password passed to it is exactly 32
-   bytes long.
+   `CCKeyDerivationPBKDF` only for SQLCipher 4's parameters: PBKDF2 with a
+   32-byte password, a 16-byte salt, HMAC-SHA512 and (on Apple silicon)
+   256,000 rounds. WeChat 4.1.15 makes an unrelated 32-byte derivation first,
+   which a length-only check would capture by mistake.
 2. When you log back in, it reads those 32 bytes once (from register `x1` on
    Apple silicon, `rsi` on Intel), then detaches. It reads nothing else and
    changes nothing in WeChat. Because it pauses on a macOS function rather than
